@@ -14,6 +14,21 @@ from ..backtest.simulated import Simulated
 
 logger = logging.getLogger(__name__)
 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+fh = logging.FileHandler(os.environ['ORDER_DATA_FILEPATH'] + '/orders.log')
+fh.setFormatter(formatter)
+
+logger_orders = logging.getLogger('orders')
+logger_orders.setLevel(logging.DEBUG)
+logger_orders.addHandler(fh)
+
+logger_orders.info('*** Start of log ***')
+
 
 class OrderStatus(Enum):
     # Pending
@@ -28,6 +43,8 @@ class OrderStatus(Enum):
     VOIDED = "Voided"
     LAPSED = "Lapsed"
     VIOLATION = "Violation"  # order never placed due to failing controls
+    # Error / Quarantine / Orphaned Orders
+    EXPIRED_CANCEL = "Expired cancel"  # if an order is stuck in canceling for a long period of time
 
 
 class BaseOrder:
@@ -60,14 +77,15 @@ class BaseOrder:
 
         self.date_time_created = datetime.datetime.utcnow()
         self.date_time_execution_complete = None
+        self.date_time_last_status_update = None
 
     # status
     def _update_status(self, status: OrderStatus) -> None:
         self.status_log.append(status)
         self.status = status
+        self.date_time_last_status_update = datetime.datetime.utcnow()
         logger.info("Order status update: %s" % self.status.value, extra=self.info)
-        if self.trade.complete:
-            self.trade.complete_trade()
+        logger_orders.info(f'Order status update: {self.status.value} - {self.info}')
 
     def placing(self) -> None:
         self._update_status(OrderStatus.PENDING)
@@ -143,7 +161,7 @@ class BaseOrder:
 
     @property
     def complete(self) -> bool:
-        """Returns False if order is
+        """ Returns False if order is
         live or pending in the market"""
         if self.status in [
             OrderStatus.PENDING,

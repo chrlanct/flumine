@@ -22,6 +22,8 @@ class BaseControl:
     def _on_error(self, order: BaseOrder, error: str) -> None:
         order.violation()
         logger.warning(
-            "Order has violated {0} and will not be placed".format(self.NAME),
+            f"Order has violated {self.NAME} and will not be placed - " \
+            f"Error: {error} - "\
+            f"Order Info: {order.info}",
             extra={"control": self.NAME, "error": error, "order": order.info},
         )
