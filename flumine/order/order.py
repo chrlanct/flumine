@@ -20,8 +20,7 @@ load_dotenv()
 
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-# fh = logging.FileHandler(os.environ['ORDER_DATA_FILEPATH'] + '/orders.log')
-fh = logging.FileHandler('/betfair/Betfair-Market-Market/data/order_data/orders.log')
+fh = logging.FileHandler(os.environ['ORDER_DATA_FILEPATH'] + '/orders.log')
 fh.setFormatter(formatter)
 
 logger_orders = logging.getLogger('orders')

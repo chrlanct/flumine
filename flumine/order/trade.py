@@ -21,8 +21,7 @@ load_dotenv()
 
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-# fh = logging.FileHandler(os.environ['TRADE_DATA_FILEPATH'] + '/trades.log')
-fh = logging.FileHandler('/betfair/Betfair-Market-Market/data/trade_data/trades.log')
+fh = logging.FileHandler(os.environ['TRADE_DATA_FILEPATH'] + '/trades.log')
 fh.setFormatter(formatter)
 
 logger_trades = logging.getLogger('trades')
