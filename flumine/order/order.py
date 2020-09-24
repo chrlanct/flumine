@@ -14,21 +14,6 @@ from ..backtest.simulated import Simulated
 
 logger = logging.getLogger(__name__)
 
-import os
-from dotenv import load_dotenv
-load_dotenv()
-
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-fh = logging.FileHandler(os.environ['ORDER_DATA_FILEPATH'] + '/orders.log')
-fh.setFormatter(formatter)
-
-logger_orders = logging.getLogger('orders')
-logger_orders.setLevel(logging.DEBUG)
-logger_orders.addHandler(fh)
-
-logger_orders.info('*** Start of log ***')
-
 
 class OrderStatus(Enum):
     # Pending
@@ -84,8 +69,7 @@ class BaseOrder:
         self.status_log.append(status)
         self.status = status
         self.date_time_last_status_update = datetime.datetime.utcnow()
-        logger.info("Order status update: %s" % self.status.value, extra=self.info)
-        logger_orders.info(f'Order status update: {self.status.value} - {self.info}')
+        logger.info(f'Order status update: {self.status.value} - {self.info}')
 
     def placing(self) -> None:
         self._update_status(OrderStatus.PENDING)

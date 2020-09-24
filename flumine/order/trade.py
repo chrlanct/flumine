@@ -15,22 +15,6 @@ from ..utils import get_market_notes
 logger = logging.getLogger(__name__)
 
 
-import os
-from dotenv import load_dotenv
-load_dotenv()
-
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-fh = logging.FileHandler(os.environ['TRADE_DATA_FILEPATH'] + '/trades.log')
-fh.setFormatter(formatter)
-
-logger_trades = logging.getLogger('trades')
-logger_trades.setLevel(logging.DEBUG)
-logger_trades.addHandler(fh)
-
-logger_trades.info('*** Start of log ***')
-
-
 class TradeStatus(Enum):
     PENDING = "Pending"  # pending exchange processing
     LIVE = "Live"
@@ -79,8 +63,7 @@ class Trade:
     def _update_status(self, status: TradeStatus) -> None:
         self.status_log.append(status)
         self.status = status
-        logger.info("Trade status update: %s" % self.status.value, extra=self.info)
-        logger_trades.info(f'Order status update: {self.status.value} - {self.info}')
+        logger.info(f'Trade status update: {self.status.value} - {self.info}')
 
     def complete_trade(self) -> None:
         self._update_status(TradeStatus.COMPLETE)
