@@ -70,7 +70,7 @@ class BaseOrder:
         self.status_log.append(status)
         self.status = status
         self.date_time_last_status_update = datetime.datetime.utcnow()
-        logger.info(f'Order status update: {self.status.value} - {json.dumps(self.info)}')
+        logger.info(f'Order status update: {self.status.value} - {json.dumps(self.info_json_friendly)}')
 
     def placing(self) -> None:
         self._update_status(OrderStatus.PENDING)
@@ -234,6 +234,30 @@ class BaseOrder:
             "customer_order_ref": self.customer_order_ref,
             "bet_id": self.bet_id,
             "trade": self.trade.info,
+            "order_type": self.order_type.info,
+            "info": {
+                "side": self.side,
+                "size_matched": self.size_matched,
+                "size_remaining": self.size_remaining,
+                "size_cancelled": self.size_cancelled,
+                "size_lapsed": self.size_lapsed,
+                "size_voided": self.size_voided,
+                "average_price_matched": self.average_price_matched,
+            },
+            "status": self.status.value if self.status else None,
+            "status_log": ", ".join([s.value for s in self.status_log]),
+        }
+
+    @property
+    def info_json_friendly(self) -> dict:
+        return {
+            "market_id": self.market_id,
+            "selection_id": self.selection_id,
+            "handicap": self.handicap,
+            "id": self.id,
+            "customer_order_ref": self.customer_order_ref,
+            "bet_id": self.bet_id,
+            "trade": self.trade.info_json_friendly,
             "order_type": self.order_type.info,
             "info": {
                 "side": self.side,

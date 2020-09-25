@@ -64,7 +64,7 @@ class Trade:
     def _update_status(self, status: TradeStatus) -> None:
         self.status_log.append(status)
         self.status = status
-        logger.info(f'Trade status update: {self.status.value} - {json.dumps(self.info)}')
+        logger.info(f'Trade status update: {self.status.value} - {json.dumps(self.info_json_friendly)}')
 
     def complete_trade(self) -> None:
         self._update_status(TradeStatus.COMPLETE)
@@ -156,6 +156,17 @@ class Trade:
 
     @property
     def info(self) -> dict:
+        return {
+            "id": self.id,
+            "strategy": self.strategy,
+            "status": self.status,
+            "orders": [o.id for o in self.orders],
+            "notes": self.notes_str,
+            "market_notes": self.market_notes,
+        }
+
+    @property
+    def info_json_friendly(self) -> dict:
         return {
             "id": str(self.id),
             "strategy": str(self.strategy),
