@@ -1,3 +1,4 @@
+import json
 import uuid
 import logging
 import datetime
@@ -63,7 +64,7 @@ class Trade:
     def _update_status(self, status: TradeStatus) -> None:
         self.status_log.append(status)
         self.status = status
-        logger.info(f'Trade status update: {self.status.value} - {self.info}')
+        logger.info(f'Trade status update: {self.status.value} - {json.dumps(self.info)}')
 
     def complete_trade(self) -> None:
         self._update_status(TradeStatus.COMPLETE)

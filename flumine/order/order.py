@@ -1,3 +1,4 @@
+import json
 import uuid
 import logging
 import datetime
@@ -69,7 +70,7 @@ class BaseOrder:
         self.status_log.append(status)
         self.status = status
         self.date_time_last_status_update = datetime.datetime.utcnow()
-        logger.info(f'Order status update: {self.status.value} - {self.info}')
+        logger.info(f'Order status update: {self.status.value} - {json.dumps(self.info)}')
 
     def placing(self) -> None:
         self._update_status(OrderStatus.PENDING)
