@@ -158,7 +158,7 @@ class Trade:
     def info(self) -> dict:
         return {
             "id": str(self.id),
-            "strategy": self.strategy,
+            "strategy": str(self.strategy),
             "status": self.status,
             "orders": [o.id for o in self.orders],
             "notes": self.notes_str,
