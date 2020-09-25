@@ -170,7 +170,7 @@ class Trade:
         return {
             "id": str(self.id),
             "strategy": str(self.strategy),
-            "status": self.status,
+            "status": str(self.status),
             "orders": [o.id for o in self.orders],
             "notes": self.notes_str,
             "market_notes": self.market_notes,
